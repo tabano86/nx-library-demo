@@ -25,8 +25,8 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "postinstall": "ngcc --properties es2015 browser module main",
-    "version:libs": "lerna version",
-    "publish:libs": "lerna publish from-package"
+    "version:libs": "lerna version --conventional-commits --yes",
+    "publish:libs": "lerna publish from-git --yes"
   },
   "private": true,
   "dependencies": {
