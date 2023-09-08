@@ -1,0 +1,44 @@
+name: Publish Libraries
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          registry-url: 'https://your-artifactory-instance.jfrog.io/artifactory/api/npm/your-npm-repo/'
+          scope: '@your-scope'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Libraries
+        run: |
+          nx build button
+          nx build textbox
+
+      - name: Version Libraries
+        run: npm run version:libs
+
+      - name: Publish Libraries
+        run: npm run publish:libs
+
+      - name: Commit Version Changes
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git add .
+          git commit -m "chore: version bump [skip ci]" || echo "No changes to commit"
+          git push origin main
